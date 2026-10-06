@@ -12,15 +12,31 @@ An end-to-end SQL Server data warehouse built from raw retail CSV data, using **
 Technologies
 Data Pipeline Architecture
 Date Modeling
-Step 1: Cleaning and Transformation
-Step 2: Storage
-Step 3: ETL / Orchestration
-Step 4: Analytics
-Step 5: Dashboard
+**Step 1:** Cleaning and Transformation
+**Step 2:** Storage
+**Step 3:** ETL / Orchestration
+**Step 4:** Analytics
+**Step 5:** Dashboard
 
 # dataset used 
 This project uses a retail dataset containing transactional records covering customers, products, orders, sellers, payments, and geographic information, along with related attributes used for sales and customer analysis.
 The dataset was sourced from Kaggle and used as the raw input for the data warehouse and ETL pipeline.
+
+**Website:** :https://www.kaggle.com/datasets/mmumairkhattak/e-commerce-orders-dataset-2026-scra
+**Data Dictionary:** 
+**Raw Data (CSV):**
+
+# Technologies
+
+The following technologies are used to build this project:
+
+- **Language:** SQL (T-SQL)
+- **Database:** SQL Server
+- **Development & ETL:** SQL Server Management Studio (SSMS)
+- **Architecture:** Medallion Architecture (Bronze / Silver / Gold)
+- **Data Modeling:** Star Schema
+
+# Data Pipeline Architecture
 
 
 
