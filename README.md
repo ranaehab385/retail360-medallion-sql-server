@@ -9,16 +9,16 @@ An end-to-end SQL Server data warehouse built from raw retail CSV data, using **
 5. **Built the Gold layer** with a structured dimensional model and consistent relationships.
 
 # Table of Content
+Dataset Used
 Technologies
 Data Pipeline Architecture
 Date Modeling
-**Step 1:** Cleaning and Transformation
-**Step 2:** Storage
-**Step 3:** ETL / Orchestration
-**Step 4:** Analytics
-**Step 5:** Dashboard
+**Step 1:** Bronze Layer – Raw Data Ingestion  
+**Step 2:** Silver Layer – Data Cleaning & Transformation  
+**Step 3:** Gold Layer – Dimensional Modeling  
+**Step 4:** Analytics & Visualization
 
-# dataset used 
+# Dataset Used
 This project uses a retail dataset containing transactional records covering customers, products, orders, sellers, payments, and geographic information, along with related attributes used for sales and customer analysis.
 The dataset was sourced from Kaggle and used as the raw input for the data warehouse and ETL pipeline.
 
@@ -39,6 +39,41 @@ The following technologies are used to build this project:
 # Data Pipeline Architecture
 
 <img width="1362" height="592" alt="Untitled Diagram-Page-1 drawio" src="https://github.com/user-attachments/assets/0b09481f-96a1-4859-a2ea-ea1058e21a16" />
+
+
+# Data Modeling
+The data warehouse follows a Medallion Architecture, with data progressing through Bronze, Silver, and Gold layers. The Silver layer is used for data preparation and transformation, while the Gold layer contains the final dimensional model for analytics.
+<img width="1252" height="372" alt="Untitled Diagram-Page-2 drawio" src="https://github.com/user-attachments/assets/bc05b9c2-1d11-4f9d-a197-f8ca16cb0621" />
+
+The Gold layer is structured using a star schema, with the fact table connected to the relevant dimension tables through consistent keys.
+
+
+# **Step 1:** Bronze Layer – Raw Data Ingestion  
+
+Bronze Layer is Source Preservation: Preserved the raw source structure with minimal transformation to maintain data traceability and auditability.
+, Used BULK INSERT to efficiently load the CSV data into the Bronze layer.
+CSV Handling: Configured the load for CSV format with FIRSTROW = 2 to exclude the header row.
+Character Encoding: Used UTF-8 encoding (CODEPAGE = 65001) to correctly handle the source data.
+
+<img width="1022" height="207" alt="Screenshot 2026-10-06 195849" src="https://github.com/user-attachments/assets/ba1e1d22-5af7-4842-a733-502c680380ec" />
+
+Table Refresh: Used TRUNCATE TABLE before each load to ensure a clean and consistent raw-layer refresh.
+Load Monitoring: Captured batch and load durations to monitor the ingestion process.
+
+<img width="1362" height="890" alt="Screenshot 2026-10-06 200037" src="https://github.com/user-attachments/assets/0823343c-cc2b-46b5-abcb-727eb37ade58" />
+
+Error Handling: Implemented TRY...CATCH to capture and report errors during the loading process.
+
+<img width="1397" height="570" alt="Screenshot 2026-10-06 200022" src="https://github.com/user-attachments/assets/45fe0040-771d-42ec-82d8-5b6372fa3df9" />
+
+# **Step 2:** Silver Layer – Data Cleaning & Transformation 
+
+
+
+
+
+
+
 
 
 
