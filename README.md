@@ -38,5 +38,8 @@ The following technologies are used to build this project:
 
 # Data Pipeline Architecture
 
+<img width="1362" height="592" alt="Untitled Diagram-Page-1 drawio" src="https://github.com/user-attachments/assets/0b09481f-96a1-4859-a2ea-ea1058e21a16" />
+
+
 
 
