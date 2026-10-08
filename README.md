@@ -109,7 +109,7 @@ Problem identification:
 - Data Quality Issue – Geographic Inconsistency: City–country mappings contained incorrect values, such as assigning Riyadh to France. The country was standardized based on the associated city.
 
 <img width="1470" height="650" alt="Screenshot 2026-10-08 150805" src="https://github.com/user-attachments/assets/1442b49b-d8fa-4326-a493-6570571e250b" />
-<img width="1478" height="868" alt="Screenshot 2026-10-08 150745" src="https://github.com/user-attachments/assets/0276ea6f-3bda-4603-9416-58270df270c7" />
+<img width="1431" height="880" alt="Screenshot 2026-10-08 151309" src="https://github.com/user-attachments/assets/a4e66369-4dac-48dc-b080-790f36709638" />
 
 
 
