@@ -68,6 +68,33 @@ Error Handling: Implemented TRY...CATCH to capture and report errors during the 
 
 # **Step 2:** Silver Layer – Data Cleaning & Transformation 
 
+The Silver layer handles the main data preparation, addressing source-data inconsistencies and restructuring the flat dataset into Customer, Product, and Order entities.
+
+**Problem:** The 30,000 transaction records contained repeated customer and product information, making the raw identifiers unsuitable for clean entity-level modeling.
+
+**Customer IDs with inconsistent records:** 
+Several records share the same ID with conflicting attributes. The issue should be flagged to the data owner to verify whether it is intentional or a data-entry error before handling it.
+**a. handling by :** Customer Key Generation A deterministic `customer_sk` is generated using an MD5 hash of the customer’s identifying attributes. The same key-generation logic is applied to the Orders data to ensure consistent key matching and referential integrity between the Customer dimension and Order records.
+
+photo
+
+**Customer Validation & Deduplication**
+The silver.customer_rt360 table was validated using customer_sk to confirm that each customer is represented once in the dimension, rather than being repeated for each transaction.
+
+phto
+
+**Product Uniqueness :** 
+Product combinations were identified from the transactional dataset to distinguish the actual product entities from repeated order-level records.
+
+photo
+
+Problem identification:
+The source data contains 30,000 transaction records, while the actual number of unique products is approximately 320. This indicates that product information is repeated across transactions.
+
+photo
+
+
+
 
 
 
