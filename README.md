@@ -9,10 +9,10 @@ An end-to-end SQL Server data warehouse built from raw retail CSV data, using **
 5. **Built the Gold layer** with a structured dimensional model and consistent relationships.
 
 # Table of Content
-Dataset Used 
-Technologies
-Data Pipeline Architecture
-Date Modeling
+-Dataset Used 
+-Technologies
+-Data Pipeline Architecture
+-Date Modeling
 **Step 1:** Bronze Layer – Raw Data Ingestion  
 **Step 2:** Silver Layer – Data Cleaning & Transformation  
 **Step 3:** Gold Layer – Dimensional Modeling  
