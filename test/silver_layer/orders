@@ -1,0 +1,109 @@
+-- ====================================================================
+-- Checking 'silver.order_rt360'
+-- ====================================================================
+-- Reconciliation: 
+-- Expectation: No Results
+SELECT s.silver_rows, b.bronze_rows
+FROM (SELECT COUNT(*) AS silver_rows FROM silver.order_rt360) s
+CROSS JOIN (SELECT COUNT(*) AS bronze_rows FROM bronze.retail_orders_raw) b
+WHERE s.silver_rows <> b.bronze_rows;
+
+-- Check for NULLs in Keys
+-- Expectation: No Results
+SELECT *
+FROM silver.order_rt360
+WHERE Order_ID IS NULL OR customer_sk IS NULL OR product_sk IS NULL OR Order_Date IS NULL;
+
+-- Check for Duplicate Order Lines 
+-- Expectation: No Results
+SELECT Order_ID, product_sk, COUNT(*) AS duplicate_count
+FROM silver.order_rt360
+GROUP BY Order_ID, product_sk
+HAVING COUNT(*) > 1;
+
+
+-- Check for Unwanted Spaces
+-- Expectation: No Results
+SELECT *
+FROM silver.order_rt360
+WHERE Payment_Method   != TRIM(Payment_Method)
+   OR Device_Type      != TRIM(Device_Type)
+   OR Traffic_Source   != TRIM(Traffic_Source)
+   OR Shipping_Method  != TRIM(Shipping_Method)
+   OR Warehouse_Region != TRIM(Warehouse_Region)
+   OR Order_Status     != TRIM(Order_Status);
+
+-- Data Standardization & Consistency
+SELECT DISTINCT Payment_Method   FROM silver.order_rt360;
+SELECT DISTINCT Device_Type      FROM silver.order_rt360;
+SELECT DISTINCT Traffic_Source   FROM silver.order_rt360;
+SELECT DISTINCT Shipping_Method  FROM silver.order_rt360;
+SELECT DISTINCT Warehouse_Region FROM silver.order_rt360;
+SELECT DISTINCT Order_Status     FROM silver.order_rt360;
+SELECT DISTINCT Returned         FROM silver.order_rt360;
+SELECT DISTINCT Season           FROM silver.order_rt360;
+
+-- Date consistency: order_date 
+-- Expectation: No Results
+SELECT Order_ID, Order_Date, [Year], [Month], [Day]
+FROM silver.order_rt360
+WHERE YEAR(Order_Date)  <> [Year]
+   OR MONTH(Order_Date) <> [Month]
+   OR DAY(Order_Date)   <> [Day];
+
+-- Quarter consistency
+-- Expectation: No Results
+SELECT Order_ID, Order_Date, Quarter
+FROM silver.order_rt360
+WHERE DATEPART(QUARTER, Order_Date) <> Quarter;
+
+-- Out-of-range dates
+-- Expectation: No Results
+SELECT Order_ID, Order_Date
+FROM silver.order_rt360
+WHERE Order_Date  < '2000-01-01';
+
+-- Invalid measures
+-- Expectation: No Results
+SELECT Order_ID, Unit_Price, Quantity, Discount_Percent, Discount_Amount,
+       Shipping_Cost, Tax_Amount, Order_Amount
+FROM silver.order_rt360
+WHERE Unit_Price IS NULL OR Unit_Price < 0
+   OR Quantity IS NULL OR Quantity <= 0
+   OR Discount_Percent < 0 OR Discount_Percent > 100
+   OR Discount_Amount < 0
+   OR Shipping_Cost < 0
+   OR Tax_Amount < 0
+   OR Order_Amount IS NULL OR Order_Amount < 0;
+
+-- Discount_Amount vs Discount_Percent 
+-- Expectation: No Results 
+SELECT Order_ID, Unit_Price, Quantity, Discount_Percent, Discount_Amount
+FROM silver.order_rt360
+WHERE ABS(Discount_Amount - (Unit_Price * Quantity * Discount_Percent / 100.0)) > 0.01;
+
+-- Order_Amount reconciliation 
+-- Expectation: No Results
+SELECT Order_ID, Order_Amount,
+       (Unit_Price * Quantity - Discount_Amount + Shipping_Cost + Tax_Amount) AS calculated_amount
+FROM silver.order_rt360
+WHERE ABS(Order_Amount - (Unit_Price * Quantity - Discount_Amount + Shipping_Cost + Tax_Amount)) > 0.01;
+
+-- Delivery days 
+-- Expectation: No Results
+SELECT Order_ID, Delivery_Days
+FROM silver.order_rt360
+WHERE Delivery_Days < 0;
+
+-- Review rating 
+-- Expectation: No Results
+SELECT Order_ID, Review_Rating
+FROM silver.order_rt360
+WHERE Review_Rating IS NOT NULL AND Review_Rating NOT BETWEEN 1 AND 5;
+
+-- Profit consistency: 
+-- Expectation: No Results
+SELECT Order_ID, Profit_Margin_Percent, Profit_Amount
+FROM silver.order_rt360
+WHERE (Profit_Amount > 0 AND Profit_Margin_Percent < 0)
+   OR (Profit_Amount < 0 AND Profit_Margin_Percent > 0);
