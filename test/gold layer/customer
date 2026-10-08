@@ -1,0 +1,35 @@
+-- 1.1 Uniqueness of surrogate key (customer_key)
+SELECT customer_key, COUNT(*) AS duplicate_count
+FROM gold.dim_customers
+GROUP BY customer_key
+HAVING COUNT(*) > 1;
+
+-- 1.2 Uniqueness of business key (customer_sk)
+SELECT customer_sk, COUNT(*) AS duplicate_count
+FROM gold.dim_customers
+GROUP BY customer_sk
+HAVING COUNT(*) > 1;
+
+-- 1.3 NULL keys
+SELECT *
+FROM gold.dim_customers
+WHERE customer_key IS NULL OR customer_sk IS NULL;
+
+-- 1.4 Invalid ages
+SELECT customer_sk, age
+FROM gold.dim_customers
+WHERE age IS NULL OR age < 0 OR age > 120;
+
+-- 1.5 Unexpected gender values 
+SELECT DISTINCT gender
+FROM gold.dim_customers;
+
+-- 1.6 Negative lifetime value
+SELECT customer_sk, Customer_Lifetime_Value
+FROM gold.dim_customers
+WHERE Customer_Lifetime_Value < 0;
+
+-- 1.7 Missing geography
+SELECT customer_sk, country, city
+FROM gold.dim_customers
+WHERE country IS NULL OR city IS NULL;
