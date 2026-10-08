@@ -23,8 +23,6 @@
 The dataset was sourced from Kaggle and used as the raw input for the data warehouse and ETL pipeline.
 
 **Website:** :https://www.kaggle.com/datasets/mmumairkhattak/e-commerce-orders-dataset-2026-scra
-**Data Dictionary:** 
-**Raw Data (CSV):**
 
 # Technologies
 
