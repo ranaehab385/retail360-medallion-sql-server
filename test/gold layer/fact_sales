@@ -1,0 +1,65 @@
+-- ====================================================================
+-- 3. gold.fact_sales
+-- ====================================================================
+
+-- 3.1 Referential integrity (orphan records)
+SELECT f.order_id, f.customer_key, f.product_key
+FROM gold.fact_sales f
+LEFT JOIN gold.dim_customers c ON c.customer_key = f.customer_key
+LEFT JOIN gold.dim_products  p ON p.product_key  = f.product_key
+WHERE c.customer_key IS NULL OR p.product_key IS NULL;
+
+-- 3.2 Row count: fact_sales 
+-- Expectation: difference = 0
+SELECT
+    (SELECT COUNT(*) FROM Retail360DW.silver.order_rt360) AS silver_rows,
+    (SELECT COUNT(*) FROM gold.fact_sales)                AS gold_rows,
+    (SELECT COUNT(*) FROM gold.fact_sales)
+  - (SELECT COUNT(*) FROM Retail360DW.silver.order_rt360) AS difference
+HAVING (SELECT COUNT(*) FROM gold.fact_sales)
+     <> (SELECT COUNT(*) FROM Retail360DW.silver.order_rt360);
+
+-- 3.3 Duplicate order lines
+
+SELECT order_id, product_key, COUNT(*) AS duplicate_count
+FROM gold.fact_sales
+GROUP BY order_id, product_key
+HAVING COUNT(*) > 1;
+
+-- 3.4 NULL keys in fact
+SELECT *
+FROM gold.fact_sales
+WHERE order_id IS NULL OR order_date IS NULL;
+
+-- 3.5 Invalid measures
+SELECT order_id, unit_price, quantity, discount_percent, order_amount
+FROM gold.fact_sales
+WHERE unit_price < 0
+   OR quantity <= 0
+   OR discount_percent < 0 OR discount_percent > 100
+   OR order_amount < 0;
+
+-- 3.6 Date consistency:
+SELECT order_id, order_date, Year, month, day
+FROM gold.fact_sales
+WHERE YEAR(order_date)  <> Year
+   OR MONTH(order_date) <> month
+   OR DAY(order_date)   <> day;
+
+-- 3.7 Delivery days 
+SELECT order_id, delivery_days
+FROM gold.fact_sales
+WHERE delivery_days < 0;
+
+-- 3.8 Review rating 
+SELECT order_id, review_rating
+FROM gold.fact_sales
+WHERE review_rating IS NOT NULL
+  AND review_rating NOT BETWEEN 1 AND 5;
+
+-- 3.9 Order amount reconciliation 
+-- unit_price * quantity - discount_amount + shipping_cost + tax_amount ≈ order_amount
+SELECT order_id, order_amount,
+       (unit_price * quantity - discount_amount + shipping_cost + tax_amount) AS calculated_amount
+FROM gold.fact_sales
+WHERE ABS(order_amount - (unit_price * quantity - discount_amount + shipping_cost + tax_amount)) > 0.01;
