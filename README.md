@@ -122,7 +122,7 @@ The Gold layer restructures the cleaned Silver data into a Star Schema, separati
 
 **Fact–Dimension Key Mapping:**
 - The Customer and Product surrogate keys were mapped into the Sales Fact using the corresponding customer_sk and product_sk relationships.
-- 
+ 
 <img width="1422" height="912" alt="image" src="https://github.com/user-attachments/assets/5930e85a-5720-49e0-8f88-b8ff6a646054" />
 
 
