@@ -13,10 +13,10 @@ An end-to-end SQL Server data warehouse built from raw retail CSV data, using **
 - Technologies
 - Data Pipeline Architecture
 - Date Modeling
-**Step 1:** Bronze Layer – Raw Data Ingestion  
-**Step 2:** Silver Layer – Data Cleaning & Transformation  
-**Step 3:** Gold Layer – Dimensional Modeling  
-**Step 4:** Analytics & Visualization
+- **Step 1:** Bronze Layer – Raw Data Ingestion  
+- **Step 2:** Silver Layer – Data Cleaning & Transformation  
+- **Step 3:** Gold Layer – Dimensional Modeling  
+- **Step 4:** Analytics & Visualization
 
 # Dataset Used
 This project uses a retail dataset containing transactional records covering customers, products, orders, sellers, payments, and geographic information, along with related attributes used for sales and customer analysis.
