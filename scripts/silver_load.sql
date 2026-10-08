@@ -14,9 +14,7 @@ BEGIN
 		PRINT 'Loading CRM Tables';
 		PRINT '------------------------------------------------';
 
-		-- Loading silver
-       SET @start_time = GETDATE();
-
+       
 PRINT '>> Truncating Table: silver.customer_rt360';
 TRUNCATE TABLE silver.customer_rt360;
 
@@ -29,11 +27,12 @@ SET @start_time = GETDATE();
         
         WITH cleansed_data AS (
             SELECT 
-                 Order_ID,          -- جديد
+                 Order_ID,          
                  Order_Date,
                 Customer_ID,
                 CONCAT(Customer_ID, '_', LEFT(Customer_Gender, 1), '_', CAST(Customer_Age AS VARCHAR)) AS new_customer_id,
-                LOWER(CONVERT(VARCHAR(32), HASHBYTES('MD5', CONCAT(Customer_ID, '_', Customer_Gender, '_', CAST(Customer_Age AS VARCHAR), '_', [Membership_Status], '_', [Customer_Segment])), 2)) AS customer_sk,
+                LOWER(CONVERT(VARCHAR(32), HASHBYTES('MD5', CONCAT(Customer_ID, '_', Customer_Gender, '_', CAST(Customer_Age AS VARCHAR), '_',
+			[Membership_Status], '_', [Customer_Segment])), 2)) AS customer_sk,
                 Customer_Gender,
                 Customer_Age,
                 City,
@@ -65,10 +64,10 @@ SET @start_time = GETDATE();
                 Corrected_Country AS Country,
                 City,
                 Customer_Segment,
-                -- حساب أقصى قيمة لـ Customer_Lifetime_Value لكل customer_sk
+                
                  MAX(Customer_Lifetime_Value) OVER (PARTITION BY customer_sk) AS Max_Customer_Lifetime_Value,
         ROW_NUMBER() OVER (PARTITION BY customer_sk
-                           ORDER BY Order_Date DESC, Order_ID DESC) AS rn,     -- جديد (خدي بالك من الفاصلة في آخره)
+                           ORDER BY Order_Date DESC, Order_ID DESC) AS rn,    
         Membership_Status
     FROM cleansed_data
         )
@@ -174,8 +173,8 @@ INSERT INTO silver.order_rt360
 )
 SELECT
     Order_ID,
-    LOWER(CONVERT(VARCHAR(32), HASHBYTES('MD5', CONCAT(Customer_ID, '_', Customer_Gender, '_', CAST(Customer_Age AS VARCHAR),'_' , [Membership_Status],'_' , [Customer_Segment])), 2)) AS customer_sk,
-    CONCAT(Customer_ID, '_', LEFT(Customer_Gender, 1), '_', CAST(Customer_Age AS VARCHAR) ) AS     new_customer_id  ,
+    LOWER(CONVERT(VARCHAR(32), HASHBYTES('MD5', CONCAT(Customer_ID, '_', Customer_Gender, '_', CAST(Customer_Age AS VARCHAR)
+	,'_' , [Membership_Status],'_' , [Customer_Segment])), 2)) AS customer_sk,
     Customer_ID,
     Order_Date,
     [Year],
@@ -223,7 +222,7 @@ FROM bronze.retail_orders_raw;
 	END TRY
 	BEGIN CATCH
 		PRINT '=========================================='
-		PRINT 'ERROR OCCURED DURING LOADING BRONZE LAYER'
+		PRINT 'ERROR OCCURED DURING LOADING silver LAYER'
 		PRINT 'Error Message' + ERROR_MESSAGE();
 		PRINT 'Error Message' + CAST (ERROR_NUMBER() AS NVARCHAR);
 		PRINT 'Error Message' + CAST (ERROR_STATE() AS NVARCHAR);
