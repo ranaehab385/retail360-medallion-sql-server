@@ -93,6 +93,18 @@ The source data contains 30,000 transaction records, while the actual number of 
 
 photo
 
+**Data Integrity**
+Primary key constraints were applied to the generated Customer and Product keys to enforce uniqueness and protect the integrity of the dimension records.
+
+photo
+
+! and that followed by changes in load because the error handling query catched the duplications and that resulted in zero rows output in all tables of silver stage
+
+**silver load**
+
+The Silver load procedure consolidates the transformations into a repeatable ETL process, including data cleansing, key generation, deduplication, validation, and loading of the Customer, Product, and Order tables.
+
+photo
 
 
 
