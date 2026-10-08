@@ -1,0 +1,37 @@
+-- ====================================================================
+-- Checking 'silver.product_rt360'
+-- ====================================================================
+-- Check for NULLs or Duplicates in product_sk
+-- Expectation: No Results
+SELECT product_sk, COUNT(*) AS duplicate_count
+FROM silver.product_rt360
+GROUP BY product_sk
+HAVING COUNT(*) > 1 OR product_sk IS NULL;
+
+-- Check for NULLs
+-- Expectation: No Results
+SELECT *
+FROM silver.product_rt360
+WHERE Product_Category IS NULL
+   OR Product_Subcategory IS NULL
+   OR Brand IS NULL;
+
+-- Check for Unwanted Spaces
+-- Expectation: No Results
+SELECT *
+FROM silver.product_rt360
+WHERE Product_Category    != TRIM(Product_Category)
+   OR Product_Subcategory != TRIM(Product_Subcategory)
+   OR Brand               != TRIM(Brand);
+
+-- Data Standardization & Consistency
+SELECT DISTINCT Product_Category    FROM silver.product_rt360;
+SELECT DISTINCT Product_Subcategory FROM silver.product_rt360;
+SELECT DISTINCT Brand               FROM silver.product_rt360;
+
+-- Subcategory
+-- Expectation: No Results 
+SELECT Product_Subcategory, COUNT(DISTINCT Product_Category) AS category_count
+FROM silver.product_rt360
+GROUP BY Product_Subcategory
+HAVING COUNT(DISTINCT Product_Category) > 1;
