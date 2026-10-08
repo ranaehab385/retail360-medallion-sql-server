@@ -74,9 +74,9 @@ Load Monitoring: Captured batch and load durations to monitor the ingestion proc
 
 **Customer IDs with inconsistent records:** 
 - Several records share the same ID with conflicting attributes. The issue should be flagged to the data owner to verify whether it is intentional or a data-entry error before handling it.
-- **a. handling by :** Customer Key Generation A deterministic `customer_sk` is generated using an MD5 hash of the customer’s identifying attributes. The same key-generation logic is applied to the Orders data to ensure consistent key matching and referential integrity between the Customer dimension and Order records.
+- **a. handling by :** Customer Key Generation A deterministic `customer_sk` is generated using an MD5 hash of the customer’s identifying attributes by id ,gender,date of birth instead of age , . The same key-generation logic is applied to the Orders data to ensure consistent key matching and referential integrity between the Customer dimension and Order records.
 
-<img width="1430" height="455" alt="Screenshot 2026-10-08 144744" src="https://github.com/user-attachments/assets/80727bdb-f88a-4a2a-83e6-e6ac9966d6a7" />
+<img width="1531" height="887" alt="image" src="https://github.com/user-attachments/assets/bd6b93aa-ebe8-4fa8-8539-80cb2cf4a0aa" />
 
 **Product Uniqueness :** 
 - Product combinations were identified from the transactional dataset to distinguish the actual product entities from repeated order-level records.
@@ -106,8 +106,8 @@ Problem identification:
 - The Silver load procedure consolidates the transformations into a repeatable ETL process, including data cleansing, key generation, deduplication, validation, and loading of the Customer, Product, and Order tables.
 - Data Quality Issue – Geographic Inconsistency: City–country mappings contained incorrect values, such as assigning Riyadh to France. The country was standardized based on the associated city.
 
-<img width="1470" height="650" alt="Screenshot 2026-10-08 150805" src="https://github.com/user-attachments/assets/1442b49b-d8fa-4326-a493-6570571e250b" />
-<img width="1431" height="880" alt="Screenshot 2026-10-08 151309" src="https://github.com/user-attachments/assets/a4e66369-4dac-48dc-b080-790f36709638" />
+<img width="1532" height="875" alt="image" src="https://github.com/user-attachments/assets/6d0b073f-e9b6-41bc-8f6a-60b5ea98d525" />
+<img width="1505" height="916" alt="image" src="https://github.com/user-attachments/assets/e291e44b-9bec-4e96-8343-2a88bebf6459" />
 
 
 # **Step 3:** Gold Layer – Dimensional Modeling  
