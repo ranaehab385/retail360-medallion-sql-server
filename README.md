@@ -100,7 +100,7 @@ Problem identification:
 **a. Data Integrity**
 - Primary key constraints were applied to the generated Customer and Product keys to enforce uniqueness and protect the integrity of the dimension records.
 
-<img width="1468" height="530" alt="Screenshot 2026-10-08 145508" src="https://github.com/user-attachments/assets/ebdc446d-31dc-449b-8956-9d5b1889bc1e" />
+<img width="1357" height="692" alt="Screenshot 2026-10-08 151504" src="https://github.com/user-attachments/assets/033c235d-04f7-43a5-9dae-c8c4d494f693" />
 
 - 🔐 and that followed by changes in load because the error handling query catched the duplications and that resulted in zero rows output in all tables of silver stage
 
