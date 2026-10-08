@@ -1,0 +1,27 @@
+-- ====================================================================
+-- 2. gold.dim_products
+-- ====================================================================
+
+-- 2.1 Uniqueness of surrogate key (product_key)
+SELECT product_key, COUNT(*) AS duplicate_count
+FROM gold.dim_products
+GROUP BY product_key
+HAVING COUNT(*) > 1;
+
+-- 2.2 Uniqueness of business key (product_sk)
+SELECT product_sk, COUNT(*) AS duplicate_count
+FROM gold.dim_products
+GROUP BY product_sk
+HAVING COUNT(*) > 1;
+
+-- 2.3 NULL keys
+SELECT *
+FROM gold.dim_products
+WHERE product_key IS NULL OR product_sk IS NULL;
+
+-- 2.4 Missing category / brand
+SELECT product_sk, Product_Category, Product_Subcategory, Brand
+FROM gold.dim_products
+WHERE Product_Category IS NULL
+   OR Product_Subcategory IS NULL
+   OR Brand IS NULL;
