@@ -1,0 +1,91 @@
+/*
+===============================================================================
+Quality Checks - Retail360DW Silver Layer
+===============================================================================
+Script Purpose:
+    - Null or duplicate surrogate keys.
+    - Unwanted spaces in string fields.
+    - Data standardization and consistency.
+    - Invalid values / date consistency.
+    - Reconciliation with bronze.
+
+Usage Notes:
+    - Run after executing silver.load_silver_rt360.
+    - Expectation: No Results (unless stated otherwise).
+===============================================================================
+*/
+
+-- ====================================================================
+-- Checking 'silver.customer_rt360'
+-- ====================================================================
+-- Check for NULLs or Duplicates in customer_sk
+-- Expectation: No Results
+SELECT customer_sk, COUNT(*) AS duplicate_count
+FROM silver.customer_rt360
+GROUP BY customer_sk
+HAVING COUNT(*) > 1 OR customer_sk IS NULL;
+
+-- Check for NULL business columns
+-- Expectation: No Results
+SELECT *
+FROM silver.customer_rt360
+WHERE Customer_ID IS NULL
+   OR new_customer_id IS NULL
+   OR Customer_Gender IS NULL
+   OR Membership_Status IS NULL
+   OR Customer_Segment IS NULL;
+
+-- Check for Unwanted Spaces
+-- Expectation: No Results
+SELECT *
+FROM silver.customer_rt360
+WHERE Customer_Gender   != TRIM(Customer_Gender)
+   OR Country           != TRIM(Country)
+   OR City              != TRIM(City)
+   OR Customer_Segment  != TRIM(Customer_Segment)
+   OR Membership_Status != TRIM(Membership_Status);
+
+-- Data Standardization & Consistencyn
+SELECT DISTINCT Customer_Gender   FROM silver.customer_rt360;
+SELECT DISTINCT Customer_Segment  FROM silver.customer_rt360;
+SELECT DISTINCT Membership_Status FROM silver.customer_rt360;
+
+-- Check for Invalid Ages
+-- Expectation: No Results
+SELECT customer_sk, Customer_Age
+FROM silver.customer_rt360
+WHERE Customer_Age IS NULL OR Customer_Age < 0 OR Customer_Age > 120;
+
+-- Check for NULLs or Negative Lifetime Value
+-- Expectation: No Results
+SELECT customer_sk, Customer_Lifetime_Value
+FROM silver.customer_rt360
+WHERE Customer_Lifetime_Value IS NULL OR Customer_Lifetime_Value < 0;
+
+-- Check Country/City mapping: كل city لازم يكون ليها country واحدة
+-- Expectation: No Results
+SELECT City, COUNT(DISTINCT Country) AS country_count
+FROM silver.customer_rt360
+GROUP BY City
+HAVING COUNT(DISTINCT Country) > 1;
+
+-- Check for Missing Country
+-- Expectation: No Results
+SELECT DISTINCT City, Country
+FROM silver.customer_rt360
+WHERE Country IS NULL OR Country = '';
+
+-- Reconciliation: 
+-- Expectation: No Results
+SELECT s.silver_rows, b.bronze_distinct_sk
+FROM (SELECT COUNT(*) AS silver_rows FROM silver.customer_rt360) s
+CROSS JOIN (
+    SELECT COUNT(DISTINCT LOWER(CONVERT(VARCHAR(32), HASHBYTES('MD5',
+           CONCAT(Customer_ID,'_',Customer_Gender,'_',CAST(Customer_Age AS VARCHAR),
+                  '_',Membership_Status,'_',Customer_Segment)), 2))) AS bronze_distinct_sk
+    FROM bronze.retail_orders_raw
+) b
+WHERE s.silver_rows <> b.bronze_distinct_sk;
+
+
+
