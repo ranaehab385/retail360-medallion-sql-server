@@ -110,6 +110,20 @@ Problem identification:
 <img width="1431" height="880" alt="Screenshot 2026-10-08 151309" src="https://github.com/user-attachments/assets/a4e66369-4dac-48dc-b080-790f36709638" />
 
 
+# **Step 3:** Gold Layer – Dimensional Modeling  
+
+The Gold layer restructures the cleaned Silver data into a Star Schema, separating descriptive dimensions from transactional facts for analytical use.
+
+**Surrogate Key Generation:**
+
+- Surrogate keys were generated for the Customer and Product dimensions using ROW_NUMBER() to provide stable dimension keys.
+
+<img width="1410" height="865" alt="image" src="https://github.com/user-attachments/assets/20298eca-e88a-428d-890b-910de20b772e" />
+
+**Fact–Dimension Key Mapping:**
+- The Customer and Product surrogate keys were mapped into the Sales Fact using the corresponding customer_sk and product_sk relationships.
+- 
+<img width="1422" height="912" alt="image" src="https://github.com/user-attachments/assets/5930e85a-5720-49e0-8f88-b8ff6a646054" />
 
 
 
