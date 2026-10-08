@@ -76,35 +76,43 @@ The Silver layer handles the main data preparation, addressing source-data incon
 Several records share the same ID with conflicting attributes. The issue should be flagged to the data owner to verify whether it is intentional or a data-entry error before handling it.
 **a. handling by :** Customer Key Generation A deterministic `customer_sk` is generated using an MD5 hash of the customer’s identifying attributes. The same key-generation logic is applied to the Orders data to ensure consistent key matching and referential integrity between the Customer dimension and Order records.
 
-photo
-
-**Customer Validation & Deduplication**
-The silver.customer_rt360 table was validated using customer_sk to confirm that each customer is represented once in the dimension, rather than being repeated for each transaction.
-
-phto
+<img width="1430" height="455" alt="Screenshot 2026-10-08 144744" src="https://github.com/user-attachments/assets/80727bdb-f88a-4a2a-83e6-e6ac9966d6a7" />
 
 **Product Uniqueness :** 
 Product combinations were identified from the transactional dataset to distinguish the actual product entities from repeated order-level records.
 
-photo
-
 Problem identification:
 The source data contains 30,000 transaction records, while the actual number of unique products is approximately 320. This indicates that product information is repeated across transactions.
 
-photo
+<img width="1440" height="255" alt="Screenshot 2026-10-08 145401" src="https://github.com/user-attachments/assets/c57dda0a-912e-476b-a162-7aa4e84386a5" />
 
-**Data Integrity**
+**handling:**
+Unique product combinations were extracted using DISTINCT, and a deterministic product_sk was generated from the product attributes to create a consistent Product dimension.
+<img width="1398" height="472" alt="Screenshot 2026-10-08 150149" src="https://github.com/user-attachments/assets/e1901660-ff9a-4c3f-92c2-cea360b71b72" />
+
+**Customer Validation & Deduplication**
+The silver.customer_rt360 table was validated using customer_sk to confirm that each customer is represented once in the dimension, rather than being repeated for each transaction. 30000 rows but in real only 29918 customer and even with the small difference it was discovered
+
+<img width="1392" height="262" alt="Screenshot 2026-10-08 145056" src="https://github.com/user-attachments/assets/cad715a6-67c5-42db-934a-0addd35e0cf0" />
+
+**a. Data Integrity**
 Primary key constraints were applied to the generated Customer and Product keys to enforce uniqueness and protect the integrity of the dimension records.
 
-photo
+<img width="1468" height="530" alt="Screenshot 2026-10-08 145508" src="https://github.com/user-attachments/assets/ebdc446d-31dc-449b-8956-9d5b1889bc1e" />
 
-! and that followed by changes in load because the error handling query catched the duplications and that resulted in zero rows output in all tables of silver stage
+🔐 and that followed by changes in load because the error handling query catched the duplications and that resulted in zero rows output in all tables of silver stage
 
-**silver load**
-
+**b. silver load - handling the errors of customers duplication**
 The Silver load procedure consolidates the transformations into a repeatable ETL process, including data cleansing, key generation, deduplication, validation, and loading of the Customer, Product, and Order tables.
+Data Quality Issue – Geographic Inconsistency: City–country mappings contained incorrect values, such as assigning Riyadh to France. The country was standardized based on the associated city.
 
-photo
+<img width="1470" height="650" alt="Screenshot 2026-10-08 150805" src="https://github.com/user-attachments/assets/1442b49b-d8fa-4326-a493-6570571e250b" />
+<img width="1478" height="868" alt="Screenshot 2026-10-08 150745" src="https://github.com/user-attachments/assets/0276ea6f-3bda-4603-9416-58270df270c7" />
+
+
+
+
+
 
 
 
