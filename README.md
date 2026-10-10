@@ -91,7 +91,7 @@ Problem identification:
 <img width="1398" height="472" alt="Screenshot 2026-10-08 150149" src="https://github.com/user-attachments/assets/e1901660-ff9a-4c3f-92c2-cea360b71b72" />
 
 **Customer Validation & Deduplication**
-- The silver.customer_rt360 table was validated using customer_sk to confirm that each customer is represented once in the dimension, rather than being repeated for each transaction. 30000 rows but in real only 29918 customer and even with the small difference it was discovered
+- The silver.customer_rt360 table was validated using customer_sk to confirm that each customer is represented once in the dimension, rather than being repeated for each transaction. 30000 rows but in real only 15032 customer 
 
 <img width="1507" height="225" alt="image" src="https://github.com/user-attachments/assets/8d1b9c7c-9f6f-4af8-93d8-466f9929cf0f" />
 
