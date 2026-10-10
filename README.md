@@ -93,7 +93,7 @@ Problem identification:
 **Customer Validation & Deduplication**
 - The silver.customer_rt360 table was validated using customer_sk to confirm that each customer is represented once in the dimension, rather than being repeated for each transaction. 30000 rows but in real only 29918 customer and even with the small difference it was discovered
 
-<img width="1392" height="262" alt="Screenshot 2026-10-08 145056" src="https://github.com/user-attachments/assets/cad715a6-67c5-42db-934a-0addd35e0cf0" />
+<img width="1507" height="225" alt="image" src="https://github.com/user-attachments/assets/8d1b9c7c-9f6f-4af8-93d8-466f9929cf0f" />
 
 **a. Data Integrity**
 - Primary key constraints were applied to the generated Customer and Product keys to enforce uniqueness and protect the integrity of the dimension records.
